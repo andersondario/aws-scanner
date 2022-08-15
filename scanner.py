@@ -53,7 +53,7 @@ def fetchData(account):
             response = client.select_resource_config(
                 NextToken=nextPage,
                 Limit=100,
-                Expression="SELECT {0} WHERE resourceName not like 'AWS::EC2::%' ".format(",".join(properties)),
+                Expression="SELECT {0} WHERE resourceType not like 'AWS::EC2::%' ".format(",".join(properties)),
             )
 
             results = results + structureResults(response)
