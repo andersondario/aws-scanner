@@ -1,4 +1,8 @@
 # AWS Scanner
+
+## Requirements
+- AWS Account with AWS Config resource enabled.
+
 ## Instructions
 1. Install dependencies 
     ```
