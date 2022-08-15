@@ -1,6 +1,7 @@
 import ast
 import pandas as pd
 import boto3
+import logging
 from envyaml import EnvYAML
 
 config = EnvYAML('.env.yaml')
@@ -70,13 +71,18 @@ if __name__ == '__main__':
     writer_raw = pd.ExcelWriter("report.xlsx",engine="xlsxwriter")
 
     for account in accounts:
-        results = fetchData(account)
+        try: 
+            logging.info('Starting fetch data from account ' + account['name'])
+            results = fetchData(account)
 
-        df_summary = pd.DataFrame.from_dict(results).groupby('resourceType')['resourceType'].count()
-        df_raw = pd.DataFrame.from_dict(results)
+            df_summary = pd.DataFrame.from_dict(results).groupby('resourceType')['resourceType'].count()
+            df_raw = pd.DataFrame.from_dict(results)
 
-        writeResults(writer_summary, df_summary, account['name'])
-        writeResults(writer_raw, df_raw, account['name'], True, True)
-
+            writeResults(writer_summary, df_summary, account['name'])
+            writeResults(writer_raw, df_raw, account['name'], True, True)
+            logging.info('Fetching complete.')
+        except Exception as e:
+            logging.error(e)
+            logging.error('Error trying to fetch data from account ' + account['name'])
     writer_summary.save()
     writer_raw.save()
